@@ -2,6 +2,8 @@
 
 A family tree and photo timeline for Mochi, an Akita.
 
+**Live website:** https://hwen42.github.io/mochis-story/
+
 ## Updating the website
 
 The website is hosted with GitHub Pages. Edit `index.html`, `styles.css`,
