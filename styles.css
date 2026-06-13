@@ -253,6 +253,89 @@ h1 em { color: var(--rust); font-weight: 400; }
 .family-tree[data-filter="father"] .mother-branch { opacity: .14; pointer-events: none; filter: grayscale(1); }
 .tree-hint { display: none; text-align: center; color: var(--muted); font-size: 11px; margin: 3px 0 0; }
 
+.fiction-section {
+  min-height: 860px;
+  padding: 110px clamp(35px, 10vw, 150px);
+  display: grid;
+  grid-template-columns: minmax(340px, .9fr) minmax(380px, 1.1fr);
+  align-items: center;
+  gap: clamp(65px, 10vw, 150px);
+  position: relative;
+  overflow: hidden;
+  color: var(--white);
+  background:
+    radial-gradient(circle at 20% 40%, rgba(202, 116, 56, .28), transparent 28%),
+    linear-gradient(125deg, #172d31 0%, #1b3540 55%, #14272a 100%);
+}
+.fiction-section::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 49.9%, rgba(255,255,255,.07) 50%, transparent 50.1%);
+  pointer-events: none;
+}
+.fiction-art { width: min(440px, 100%); justify-self: end; position: relative; }
+.book-cover {
+  width: 78%;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+  transform: rotate(-2.5deg);
+  box-shadow: 22px 28px 65px rgba(0,0,0,.43);
+}
+.book-cover::after {
+  content: "";
+  position: absolute; inset: 0;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: inset 12px 0 20px rgba(0,0,0,.18);
+  pointer-events: none;
+}
+.book-cover img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.book-spine {
+  position: absolute; left: -12px; top: 7px; bottom: -7px; width: 12px;
+  background: linear-gradient(90deg, #081417, #34515a);
+  transform: skewY(-48deg); transform-origin: right top;
+}
+.cover-note {
+  position: relative; z-index: 2; margin: 27px 0 0; text-align: center;
+  color: rgba(255,255,255,.5); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+}
+.fiction-orbit { position: absolute; border: 1px solid rgba(219,172,91,.28); border-radius: 50%; }
+.orbit-one { width: 430px; height: 430px; left: -30px; top: 80px; }
+.orbit-two { width: 330px; height: 330px; left: 20px; top: 130px; border-color: rgba(255,255,255,.12); }
+.fiction-copy { position: relative; z-index: 2; max-width: 580px; }
+.fiction-copy h2 {
+  margin: 0;
+  font-size: clamp(50px, 6vw, 82px);
+  line-height: .98;
+  letter-spacing: -.025em;
+}
+.fiction-copy h2 em { color: #e1ad62; font-weight: 400; }
+.fiction-intro {
+  max-width: 510px; margin: 31px 0 35px;
+  color: rgba(255,255,255,.68); font-size: 17px; line-height: 1.75;
+}
+.fiction-copy blockquote {
+  max-width: 470px; margin: 0; padding: 3px 0 3px 24px;
+  border-left: 1px solid #d9aa57; color: rgba(255,255,255,.82);
+  font-family: "DM Serif Display", serif; font-size: 20px; font-style: italic; line-height: 1.5;
+}
+.fiction-copy blockquote p { margin: 0; }
+.fiction-meta {
+  display: flex; align-items: center; gap: 18px; margin-top: 46px;
+  padding-top: 22px; border-top: 1px solid rgba(255,255,255,.14); max-width: 500px;
+}
+.fiction-meta > span {
+  color: #d9aa57; font-family: "DM Serif Display", serif; font-size: 34px;
+}
+.fiction-meta div { display: grid; gap: 3px; }
+.fiction-meta small { color: rgba(255,255,255,.45); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
+.fiction-meta strong { font-size: 12px; font-weight: 500; }
+.fiction-kanji {
+  position: absolute; right: -18px; bottom: -46px;
+  color: rgba(255,255,255,.035); font-family: serif; font-size: 260px; line-height: 1;
+  writing-mode: vertical-rl;
+}
+
 .timeline-section { padding: 110px clamp(24px, 8vw, 120px) 130px; background: var(--pine); color: var(--white); position: relative; overflow: hidden; }
 .timeline-section::before {
   content: ""; position: absolute; width: 450px; height: 450px; border: 1px solid rgba(255,255,255,.08);
@@ -356,6 +439,12 @@ dialog::backdrop { background: rgba(19, 30, 25, .75); backdrop-filter: blur(4px)
   .vertical-note { display: none; }
   .section-heading { align-items: start; }
   .tree-hint { display: block; }
+  .fiction-section {
+    min-height: auto; padding: 90px 45px;
+    grid-template-columns: 1fr; gap: 70px;
+  }
+  .fiction-art { width: min(410px, 88%); justify-self: center; }
+  .fiction-copy { width: min(580px, 100%); justify-self: center; }
   .memory-card { grid-template-columns: 80px minmax(220px, 1fr) 1fr; gap: 38px; }
   .timeline::before { left: 99px; }
   .timeline-range { margin-left: 127px; }
@@ -376,6 +465,14 @@ dialog::backdrop { background: rgba(19, 30, 25, .75); backdrop-filter: blur(4px)
   .filter-button { padding: 9px 11px; }
   .tree-legend { width: 100%; margin: 8px 0 0; }
   .family-section { padding-top: 75px; }
+  .fiction-section {
+    padding: 85px 28px 90px;
+  }
+  .fiction-art { width: min(390px, 90%); justify-self: center; }
+  .book-cover { width: 82%; }
+  .fiction-copy { text-align: left; }
+  .fiction-copy h2 { font-size: clamp(50px, 14vw, 68px); }
+  .fiction-kanji { font-size: 170px; }
   .timeline-section { padding: 80px 22px 95px; }
   .timeline-heading .add-memory-button { margin-top: 30px; }
   .timeline::before { left: 11px; }
