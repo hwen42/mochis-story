@@ -14,6 +14,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
@@ -392,6 +393,127 @@ h1 em { color: var(--rust); font-weight: 400; }
 .empty-timeline { max-width: 600px; margin: -15px auto 0; text-align: center; color: rgba(255,255,255,.52); font-size: 13px; }
 .paw { display: block; color: var(--gold); font-size: 20px; margin-bottom: 8px; }
 
+.wall-section {
+  padding: 120px clamp(24px, 7vw, 105px) 135px;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(217,170,87,.2), transparent 23%),
+    linear-gradient(135deg, #f7f0e5, #ecdfcc);
+  position: relative;
+  overflow: hidden;
+}
+.wall-section::before {
+  content: "M";
+  position: absolute; right: -35px; top: -115px;
+  color: rgba(181,87,50,.055); font-family: "DM Serif Display", serif;
+  font-size: 430px; line-height: 1;
+}
+.wall-intro {
+  max-width: 1260px; margin: 0 auto 70px;
+  display: grid; grid-template-columns: 1fr 1fr; column-gap: 80px; align-items: end;
+  position: relative; z-index: 1;
+}
+.wall-intro .eyebrow { grid-column: 1 / -1; }
+.wall-intro h2 {
+  margin: 0; font-size: clamp(48px, 6vw, 78px); line-height: .98;
+}
+.wall-intro h2 em { color: var(--rust); font-weight: 400; }
+.wall-intro > p:last-child {
+  max-width: 440px; margin: 0 0 7px; color: var(--muted);
+  font-size: 16px; line-height: 1.75;
+}
+.wall-lock {
+  width: min(570px, 100%); margin: auto; padding: 58px;
+  background: var(--white); text-align: center; position: relative; z-index: 1;
+  box-shadow: var(--shadow);
+}
+.lock-mark {
+  width: 64px; height: 54px; margin: 0 auto 28px;
+  display: grid; place-items: end center;
+}
+.lock-mark::before {
+  content: ""; width: 34px; height: 31px; border: 2px solid var(--pine);
+  border-bottom: 0; border-radius: 20px 20px 0 0; transform: translateY(9px);
+}
+.lock-mark span {
+  width: 54px; height: 35px; display: block; position: absolute;
+  background: var(--pine);
+}
+.wall-lock h3, .wall-toolbar h3, .wall-upload-heading h3, .wall-empty h3 {
+  font-family: "DM Serif Display", serif; font-weight: 400;
+}
+.wall-lock h3 { margin: -4px 0 12px; font-size: 34px; }
+.wall-lock > p:not(.eyebrow) { color: var(--muted); line-height: 1.65; font-size: 13px; }
+.wall-password-form { margin-top: 28px; text-align: left; }
+.wall-password-form label, .wall-fields label > span {
+  display: block; margin-bottom: 8px; font-size: 9px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.wall-password-form > div { display: grid; grid-template-columns: 1fr auto; }
+.wall-password-form input, .wall-fields input, .wall-fields textarea {
+  width: 100%; border: 1px solid #c9bdac; background: white; color: var(--ink);
+  padding: 14px 15px; outline: none; border-radius: 0;
+}
+.wall-password-form input:focus, .wall-fields input:focus, .wall-fields textarea:focus { border-color: var(--rust); }
+.wall-password-form button, .wall-upload-button, .wall-submit-button {
+  border: 0; background: var(--rust); color: white; cursor: pointer;
+  padding: 14px 21px; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+}
+.wall-password-form button:hover, .wall-upload-button:hover, .wall-submit-button:hover { background: #c86740; }
+.wall-error { min-height: 18px; margin: 8px 0 0; color: #a33b2f; font-size: 11px; }
+.wall-content { max-width: 1260px; margin: auto; position: relative; z-index: 1; }
+.wall-toolbar {
+  display: flex; align-items: end; justify-content: space-between; gap: 30px;
+  margin-bottom: 34px; padding-bottom: 22px; border-bottom: 1px solid var(--line);
+}
+.wall-toolbar h3 { margin: 0; font-size: clamp(32px, 4vw, 48px); }
+.wall-actions { display: flex; gap: 9px; }
+.wall-secondary-button {
+  border: 1px solid var(--ink); color: var(--ink); background: transparent;
+  cursor: pointer; padding: 13px 18px; font-size: 10px; font-weight: 700;
+}
+.wall-upload-form {
+  margin: 0 0 45px; padding: 40px; background: var(--white); box-shadow: var(--shadow);
+}
+.wall-upload-heading { display: flex; justify-content: space-between; align-items: start; margin-bottom: 26px; }
+.wall-upload-heading h3 { margin: 0; font-size: 34px; }
+.wall-upload-heading button {
+  border: 0; background: transparent; color: var(--ink); cursor: pointer; font: 30px serif;
+}
+.wall-form-grid { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(320px, 1.2fr); gap: 38px; }
+.wall-photo-picker {
+  min-height: 300px; display: grid; place-items: center; position: relative; overflow: hidden;
+  background: #e6dac8; border: 1px dashed #ad9f8c; cursor: pointer;
+}
+.wall-photo-picker input { position: absolute; opacity: 0; pointer-events: none; }
+.wall-photo-picker > span { display: grid; gap: 5px; text-align: center; }
+.wall-photo-picker b { font-size: 30px; font-weight: 400; }
+.wall-photo-picker strong { font-size: 13px; }
+.wall-photo-picker small { color: var(--muted); font-size: 10px; }
+#wallPhotoPreview { display: none; width: 100%; height: 100%; object-fit: contain; }
+.wall-photo-picker.has-photo #wallPhotoPreview { display: block; }
+.wall-photo-picker.has-photo > span { display: none; }
+.wall-fields { display: flex; flex-direction: column; gap: 20px; }
+.wall-fields label > span b { color: var(--rust); float: right; font-size: 8px; }
+.wall-fields label > span small { color: var(--muted); float: right; font-size: 8px; }
+.wall-fields textarea { min-height: 115px; resize: vertical; }
+.wall-upload-status { min-height: 18px; margin: -7px 0 0; color: var(--muted); font-size: 11px; }
+.wall-submit-button { align-self: flex-start; }
+.wall-loading { text-align: center; color: var(--muted); padding: 55px 0; }
+.photo-wall { columns: 3; column-gap: 22px; }
+.wall-photo-card {
+  margin: 0 0 22px; background: var(--white); display: inline-block; width: 100%;
+  break-inside: avoid; box-shadow: 0 9px 32px rgba(51,47,37,.1);
+}
+.wall-photo-card img { width: 100%; height: auto; display: block; }
+.wall-photo-card figcaption { padding: 18px 20px 20px; }
+.wall-photo-card strong { display: block; color: var(--rust); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.wall-photo-card p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.wall-photo-card time { display: block; margin-top: 10px; color: #9a9c96; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+.wall-empty { padding: 80px 20px; text-align: center; color: var(--muted); }
+.wall-empty > span { color: var(--rust); font-size: 24px; }
+.wall-empty h3 { margin: 12px 0 7px; color: var(--ink); font-size: 31px; }
+.wall-empty p { max-width: 480px; margin: auto; line-height: 1.65; font-size: 13px; }
+
 footer {
   background: #172e26; color: rgba(255,255,255,.52); min-height: 130px; padding: 35px clamp(24px, 5vw, 76px);
   display: flex; align-items: center; justify-content: space-between; gap: 30px; font-size: 11px;
@@ -468,6 +590,7 @@ dialog::backdrop { background: rgba(19, 30, 25, .75); backdrop-filter: blur(4px)
   }
   .fiction-art { width: min(410px, 88%); justify-self: center; }
   .fiction-copy { width: min(580px, 100%); justify-self: center; }
+  .photo-wall { columns: 2; }
   .memory-card { grid-template-columns: 80px minmax(220px, 1fr) 1fr; gap: 38px; }
   .timeline::before { left: 99px; }
   .timeline-range { margin-left: 127px; }
@@ -507,6 +630,19 @@ dialog::backdrop { background: rgba(19, 30, 25, .75); backdrop-filter: blur(4px)
   .memory-card::before { left: 6px; top: 18px; }
   .memory-date { text-align: left; }
   .memory-card img { height: auto; }
+  .wall-section { padding: 80px 22px 95px; }
+  .wall-intro { grid-template-columns: 1fr; gap: 22px; margin-bottom: 45px; }
+  .wall-intro .eyebrow { grid-column: auto; }
+  .wall-lock { padding: 42px 22px; }
+  .wall-password-form > div { grid-template-columns: 1fr; }
+  .wall-password-form button { width: 100%; }
+  .wall-toolbar { align-items: start; flex-direction: column; }
+  .wall-actions { width: 100%; }
+  .wall-upload-button { flex: 1; }
+  .wall-upload-form { padding: 28px 20px; }
+  .wall-form-grid { grid-template-columns: 1fr; }
+  .wall-photo-picker { min-height: 265px; }
+  .photo-wall { columns: 1; }
   footer { text-align: center; flex-direction: column; padding: 42px 20px; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
   .memory-form { padding: 38px 22px 24px; }

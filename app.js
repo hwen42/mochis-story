@@ -289,5 +289,200 @@ memoryForm.addEventListener("submit", async (event) => {
   document.querySelector("#timeline").scrollIntoView({ behavior: "smooth" });
 });
 
+const wallApiUrl = "https://kcbeashjvfwspyawbnrv.supabase.co/rest/v1/rpc";
+const wallApiKey = "sb_publishable_B2bH12hTouOEifbf6yMhIQ_uq26cyS_";
+const wallLock = document.querySelector("#wallLock");
+const wallContent = document.querySelector("#wallContent");
+const wallPasswordForm = document.querySelector("#wallPasswordForm");
+const wallPasswordInput = document.querySelector("#wallPassword");
+const wallPasswordError = document.querySelector("#wallPasswordError");
+const wallUploadForm = document.querySelector("#wallUploadForm");
+const wallPhotoInput = document.querySelector("#wallPhoto");
+const wallPhotoPicker = document.querySelector("#wallPhotoPicker");
+const wallPhotoPreview = document.querySelector("#wallPhotoPreview");
+const wallUploadStatus = document.querySelector("#wallUploadStatus");
+const photoWall = document.querySelector("#photoWall");
+const wallLoading = document.querySelector("#wallLoading");
+const wallEmpty = document.querySelector("#wallEmpty");
+let wallPassword = sessionStorage.getItem("mochi-wall-password") || "";
+
+async function callWallApi(functionName, body) {
+  const response = await fetch(`${wallApiUrl}/${functionName}`, {
+    method: "POST",
+    headers: {
+      apikey: wallApiKey,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || "wall_request_failed");
+  }
+  return response.json();
+}
+
+function renderWallPhotos(photos) {
+  photoWall.replaceChildren();
+  photos.forEach((photo) => {
+    const card = document.createElement("figure");
+    card.className = "wall-photo-card";
+
+    const image = document.createElement("img");
+    image.src = photo.image_data;
+    image.alt = photo.caption || `${photo.relationship} with Mochi`;
+
+    const details = document.createElement("figcaption");
+    const relationship = document.createElement("strong");
+    relationship.textContent = photo.relationship;
+    details.appendChild(relationship);
+
+    if (photo.caption) {
+      const caption = document.createElement("p");
+      caption.textContent = photo.caption;
+      details.appendChild(caption);
+    }
+
+    const date = document.createElement("time");
+    date.dateTime = photo.created_at;
+    date.textContent = new Intl.DateTimeFormat("en", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }).format(new Date(photo.created_at));
+    details.appendChild(date);
+
+    card.append(image, details);
+    photoWall.appendChild(card);
+  });
+  wallEmpty.hidden = photos.length > 0;
+}
+
+async function unlockWall(password) {
+  wallLoading.hidden = false;
+  wallPasswordError.textContent = "";
+  try {
+    const photos = await callWallApi("mochi_wall_list", { p_password: password });
+    wallPassword = password;
+    sessionStorage.setItem("mochi-wall-password", password);
+    wallLock.hidden = true;
+    wallContent.hidden = false;
+    renderWallPhotos(photos);
+    return true;
+  } catch (error) {
+    if (error.message === "invalid_access") {
+      wallPasswordError.textContent = "That password does not open Mochi's wall.";
+    } else {
+      wallPasswordError.textContent = "The wall could not be opened. Please try again.";
+    }
+    sessionStorage.removeItem("mochi-wall-password");
+    wallPassword = "";
+    return false;
+  } finally {
+    wallLoading.hidden = true;
+  }
+}
+
+function resetWallUpload() {
+  wallUploadForm.reset();
+  wallPhotoPicker.classList.remove("has-photo");
+  wallPhotoPreview.removeAttribute("src");
+  wallUploadStatus.textContent = "";
+}
+
+function resizeWallPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const source = URL.createObjectURL(file);
+    image.onload = () => {
+      URL.revokeObjectURL(source);
+      const maxSide = 1200;
+      const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(image.naturalWidth * scale);
+      canvas.height = Math.round(image.naturalHeight * scale);
+      canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.8));
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(source);
+      reject(new Error("image_load_failed"));
+    };
+    image.src = source;
+  });
+}
+
+wallPasswordForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = wallPasswordForm.querySelector("button");
+  button.disabled = true;
+  button.textContent = "Opening…";
+  await unlockWall(wallPasswordInput.value);
+  button.disabled = false;
+  button.textContent = "Unlock the wall";
+});
+
+document.querySelector("#showWallUpload").addEventListener("click", () => {
+  wallUploadForm.hidden = false;
+  wallUploadForm.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+document.querySelector("#hideWallUpload").addEventListener("click", () => {
+  wallUploadForm.hidden = true;
+  resetWallUpload();
+});
+document.querySelector("#lockWall").addEventListener("click", () => {
+  sessionStorage.removeItem("mochi-wall-password");
+  wallPassword = "";
+  wallContent.hidden = true;
+  wallLock.hidden = false;
+  wallPasswordInput.value = "";
+  resetWallUpload();
+});
+
+wallPhotoInput.addEventListener("change", () => {
+  const file = wallPhotoInput.files[0];
+  if (!file) return;
+  wallPhotoPreview.src = URL.createObjectURL(file);
+  wallPhotoPicker.classList.add("has-photo");
+});
+
+wallUploadForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const relationship = document.querySelector("#wallRelationship").value.trim();
+  const caption = document.querySelector("#wallCaption").value.trim();
+  const file = wallPhotoInput.files[0];
+  const button = wallUploadForm.querySelector(".wall-submit-button");
+  if (!relationship || !file) return;
+
+  button.disabled = true;
+  button.textContent = "Preparing photo…";
+  wallUploadStatus.textContent = "Resizing your picture for the shared wall.";
+
+  try {
+    const imageData = await resizeWallPhoto(file);
+    if (imageData.length > 1950000) throw new Error("image_too_large");
+    button.textContent = "Uploading…";
+    await callWallApi("mochi_wall_upload", {
+      p_password: wallPassword,
+      p_relationship: relationship,
+      p_caption: caption,
+      p_image_data: imageData
+    });
+    wallUploadStatus.textContent = "Your moment is now part of Mochi's wall.";
+    resetWallUpload();
+    wallUploadForm.hidden = true;
+    await unlockWall(wallPassword);
+  } catch (error) {
+    wallUploadStatus.textContent = error.message === "image_too_large"
+      ? "This image is still too large. Please choose a smaller photo."
+      : "The photo could not be uploaded. Please try again.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Add to Mochi's wall";
+  }
+});
+
+if (wallPassword) unlockWall(wallPassword);
+
 renderTree();
 renderMemories();

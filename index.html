@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260612-2">
+  <link rel="stylesheet" href="styles.css?v=20260613-1">
 </head>
 <body>
   <header class="site-header">
@@ -20,6 +20,7 @@
       <a class="nav-link active" href="#family">Family</a>
       <a class="nav-link" href="#fiction">Fiction</a>
       <a class="nav-link" href="#timeline">Timeline</a>
+      <a class="nav-link" href="#friends">Friends</a>
     </nav>
   </header>
 
@@ -236,6 +237,85 @@
         <p>Add puppy photos, birthdays, adventures, and all the little moments in between.</p>
       </div>
     </section>
+
+    <section class="wall-section" id="friends">
+      <div class="wall-intro">
+        <p class="eyebrow">Mochi & friends</p>
+        <h2>Share a moment<br>with <em>her.</em></h2>
+        <p>A private photo wall for the people whose lives have crossed paths with Mochi.</p>
+      </div>
+
+      <div class="wall-lock" id="wallLock">
+        <div class="lock-mark" aria-hidden="true">
+          <span></span>
+        </div>
+        <p class="eyebrow">Private gallery</p>
+        <h3>Enter the family password</h3>
+        <p>Unlock the wall to see every shared photo. Uploading your own picture is completely optional.</p>
+        <form class="wall-password-form" id="wallPasswordForm">
+          <label for="wallPassword">Password</label>
+          <div>
+            <input id="wallPassword" type="password" inputmode="numeric" autocomplete="current-password" required aria-describedby="wallPasswordError">
+            <button type="submit">Unlock the wall</button>
+          </div>
+          <p class="wall-error" id="wallPasswordError" role="alert"></p>
+        </form>
+      </div>
+
+      <div class="wall-content" id="wallContent" hidden>
+        <div class="wall-toolbar">
+          <div>
+            <p class="eyebrow">The shared wall</p>
+            <h3>Everyone has a Mochi story.</h3>
+          </div>
+          <div class="wall-actions">
+            <button class="wall-secondary-button" type="button" id="lockWall">Lock</button>
+            <button class="wall-upload-button" type="button" id="showWallUpload">＋ Share a photo</button>
+          </div>
+        </div>
+
+        <form class="wall-upload-form" id="wallUploadForm" hidden>
+          <div class="wall-upload-heading">
+            <div>
+              <p class="eyebrow">Add your moment</p>
+              <h3>A photograph with Mochi</h3>
+            </div>
+            <button type="button" id="hideWallUpload" aria-label="Close upload form">×</button>
+          </div>
+          <div class="wall-form-grid">
+            <label class="wall-photo-picker" id="wallPhotoPicker">
+              <input type="file" id="wallPhoto" accept="image/jpeg,image/png,image/webp" required>
+              <img id="wallPhotoPreview" alt="">
+              <span>
+                <b>＋</b>
+                <strong>Choose your picture</strong>
+                <small>It will be resized before uploading</small>
+              </span>
+            </label>
+            <div class="wall-fields">
+              <label>
+                <span>Your relationship with Mochi <b>Required</b></span>
+                <input type="text" id="wallRelationship" placeholder="e.g. Auntie, neighbor, hiking friend" maxlength="80" required>
+              </label>
+              <label>
+                <span>A short note <small>Optional</small></span>
+                <textarea id="wallCaption" placeholder="Tell us about this moment…" maxlength="240"></textarea>
+              </label>
+              <p class="wall-upload-status" id="wallUploadStatus" role="status"></p>
+              <button class="wall-submit-button" type="submit">Add to Mochi's wall</button>
+            </div>
+          </div>
+        </form>
+
+        <p class="wall-loading" id="wallLoading">Opening the photo wall…</p>
+        <div class="photo-wall" id="photoWall" aria-live="polite"></div>
+        <div class="wall-empty" id="wallEmpty" hidden>
+          <span aria-hidden="true">✦</span>
+          <h3>The first frame is waiting.</h3>
+          <p>There are no shared photographs yet. You can simply browse, or add the first moment with Mochi.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -301,6 +381,6 @@
     </div>
   </dialog>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260613-1"></script>
 </body>
 </html>
