@@ -324,37 +324,72 @@ async function callWallApi(functionName, body) {
 
 function renderWallPhotos(photos) {
   photoWall.replaceChildren();
+  const groups = new Map();
   photos.forEach((photo) => {
-    const card = document.createElement("figure");
-    card.className = "wall-photo-card";
-
-    const image = document.createElement("img");
-    image.src = photo.image_data;
-    image.alt = photo.caption || `${photo.relationship} with Mochi`;
-
-    const details = document.createElement("figcaption");
-    const relationship = document.createElement("strong");
-    relationship.textContent = photo.relationship;
-    details.appendChild(relationship);
-
-    if (photo.caption) {
-      const caption = document.createElement("p");
-      caption.textContent = photo.caption;
-      details.appendChild(caption);
-    }
-
-    const date = document.createElement("time");
-    date.dateTime = photo.created_at;
-    date.textContent = new Intl.DateTimeFormat("en", {
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    }).format(new Date(photo.created_at));
-    details.appendChild(date);
-
-    card.append(image, details);
-    photoWall.appendChild(card);
+    const relationship = (photo.relationship || "Mochi's friend").trim();
+    if (!groups.has(relationship)) groups.set(relationship, []);
+    groups.get(relationship).push({ ...photo, relationship });
   });
+
+  [...groups.entries()]
+    .sort(([, firstPhotos], [, secondPhotos]) => {
+      const firstDate = new Date(firstPhotos[0]?.created_at || 0).getTime();
+      const secondDate = new Date(secondPhotos[0]?.created_at || 0).getTime();
+      return secondDate - firstDate;
+    })
+    .forEach(([relationship, groupPhotos]) => {
+      const group = document.createElement("section");
+      group.className = "wall-person-group";
+
+      const heading = document.createElement("div");
+      heading.className = "wall-person-heading";
+
+      const title = document.createElement("h4");
+      title.textContent = relationship;
+
+      const count = document.createElement("span");
+      count.textContent = `${groupPhotos.length} ${groupPhotos.length === 1 ? "photo" : "photos"}`;
+
+      heading.append(title, count);
+
+      const cluster = document.createElement("div");
+      cluster.className = "wall-photo-cluster";
+
+      groupPhotos.forEach((photo) => {
+        const card = document.createElement("figure");
+        card.className = "wall-photo-card";
+
+        const image = document.createElement("img");
+        image.src = photo.image_data;
+        image.alt = photo.caption || `${photo.relationship} with Mochi`;
+
+        const details = document.createElement("figcaption");
+        const name = document.createElement("strong");
+        name.textContent = photo.relationship;
+        details.appendChild(name);
+
+        if (photo.caption) {
+          const caption = document.createElement("p");
+          caption.textContent = photo.caption;
+          details.appendChild(caption);
+        }
+
+        const date = document.createElement("time");
+        date.dateTime = photo.created_at;
+        date.textContent = new Intl.DateTimeFormat("en", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }).format(new Date(photo.created_at));
+        details.appendChild(date);
+
+        card.append(image, details);
+        cluster.appendChild(card);
+      });
+
+      group.append(heading, cluster);
+      photoWall.appendChild(group);
+    });
   wallEmpty.hidden = photos.length > 0;
 }
 
